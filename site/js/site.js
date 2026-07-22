@@ -117,30 +117,80 @@
   telaGrande.addEventListener('change', ligarParallax);
 
   /* ---------------------------------------------------------------
-     4. Filtro do catálogo
+     4. Carrossel infinito (marquee)
+     Duplica os itens da trilha pra o loop de -50% não ter emenda.
+     A velocidade se ajusta à quantidade de itens, pra ficar constante.
      --------------------------------------------------------------- */
-  var filtros = document.querySelectorAll('.filtro');
-  var cards = document.querySelectorAll('#grade .card');
+  document.querySelectorAll('.marquee__trilha').forEach(function (trilha) {
+    var itens = [].slice.call(trilha.children);
+    if (!itens.length) return;
 
-  filtros.forEach(function (b) {
-    b.addEventListener('click', function () {
-      var alvo = b.dataset.f;
-
-      filtros.forEach(function (o) {
-        var ativo = o === b;
-        o.classList.toggle('is-on', ativo);
-        o.setAttribute('aria-selected', ativo ? 'true' : 'false');
-      });
-
-      cards.forEach(function (c) {
-        var mostra = alvo === 'todos' || c.dataset.cat === alvo;
-        c.hidden = !mostra;
-      });
+    // clona o conjunto inteiro uma vez (a 2ª metade que fecha o loop)
+    itens.forEach(function (li) {
+      var c = li.cloneNode(true);
+      c.setAttribute('aria-hidden', 'true'); // a cópia não é lida duas vezes
+      trilha.appendChild(c);
     });
+
+    // duração proporcional ao nº de itens: ~3,4s por item, pra o ritmo não mudar
+    var dur = itens.length * 3.4;
+    trilha.style.setProperty('--dur', dur.toFixed(0) + 's');
+
+    if (semMovimento) trilha.style.animation = 'none';
   });
 
   /* ---------------------------------------------------------------
-     5. Menu do celular
+     5. Palavra que gira na abertura
+     Efeito do "animated hero": a palavra sobe, sai por cima, a próxima
+     entra por baixo. A caixa acompanha a largura pra não abrir buraco.
+     --------------------------------------------------------------- */
+  var caixa = document.getElementById('gira');
+
+  if (caixa && !semMovimento) {
+    var palavras = [].slice.call(caixa.querySelectorAll('.gira__p'));
+    var atual = 0;
+
+    var largura = function (el) {
+      // mede a palavra sem o overflow da caixa atrapalhar
+      var m = el.cloneNode(true);
+      m.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
+      caixa.parentNode.appendChild(m);
+      var w = m.getBoundingClientRect().width;
+      m.remove();
+      return w;
+    };
+
+    var ajusta = function () { caixa.style.setProperty('--w', Math.ceil(largura(palavras[atual])) + 'px'); };
+
+    var passa = function () {
+      var sai = palavras[atual];
+      atual = (atual + 1) % palavras.length;
+      var entra = palavras[atual];
+
+      ajusta();
+      sai.classList.remove('is-on');
+      sai.classList.add('is-out');
+      entra.classList.remove('is-out');
+      // força o reflow pra o translate inicial valer antes da transição
+      void entra.offsetWidth;
+      entra.classList.add('is-on');
+
+      setTimeout(function () { sai.classList.remove('is-out'); }, 600);
+    };
+
+    // espera as fontes carregarem, senão mede com a fonte errada
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+      ajusta();
+      setInterval(passa, 2400);
+    });
+    window.addEventListener('resize', ajusta);
+  } else if (caixa) {
+    // sem movimento: mostra só a primeira e deixa a caixa do tamanho dela
+    caixa.style.setProperty('--w', 'auto');
+  }
+
+  /* ---------------------------------------------------------------
+     6. Menu do celular
      --------------------------------------------------------------- */
   var botao = document.querySelector('.topo__menu');
   var menu = document.getElementById('navmob');

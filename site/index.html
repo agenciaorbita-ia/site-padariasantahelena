@@ -12,7 +12,9 @@
 <meta property="og:image" content="img/loja/fachada.jpg">
 <meta property="og:locale" content="pt_BR">
 
-<link rel="icon" href="img/marca/logo-escura.png">
+<link rel="icon" href="img/marca/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/marca/favicon.svg">
+<meta name="theme-color" content="#492E25">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Jost:wght@200;500;700;800&family=Yellowtail&display=swap" rel="stylesheet">
@@ -78,6 +80,10 @@
     <a href="#historia">Nossa história</a>
     <a href="#equipe">Quem faz</a>
     <a href="#onde">Onde estamos</a>
+    <a class="btn btn--zap" href="https://wa.me/553138471587" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.4-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5.2-.4v-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4 5.3 5.3 0 0 0 3.2.7 2.7 2.7 0 0 0 1.8-1.3c.2-.4.2-.8.1-.9l-.4-.2z"/></svg>
+      Chamar no WhatsApp
+    </a>
   </nav>
 </header>
 
@@ -93,7 +99,17 @@
       <p class="rotulo entra" style="--d:0ms">Timóteo · Minas Gerais</p>
       <h1 id="hero-t" class="hero__h1">
         <span class="entra" style="--d:80ms">Tem fila na porta</span>
-        <em class="script entra" style="--d:200ms">desde 1968</em>
+        <span class="gira entra" style="--d:170ms">
+          <span class="gira__fixo">pelo</span><span class="sr">pão, pelo pão de queijo, pelo bolo de fubá, pelo café da tarde e pelo croissant</span>
+          <span class="gira__caixa" id="gira" aria-hidden="true">
+            <span class="gira__p is-on">pão</span>
+            <span class="gira__p">pão de queijo</span>
+            <span class="gira__p">bolo de fubá</span>
+            <span class="gira__p">café da tarde</span>
+            <span class="gira__p">croissant</span>
+          </span>
+        </span>
+        <em class="script entra" style="--d:280ms">desde 1968</em>
       </h1>
       <p class="hero__sub entra" style="--d:320ms">
         Pão, pão de queijo, broa e bolo feitos aqui dentro, todo dia, na
@@ -138,14 +154,11 @@
       </span>
     </div>
   </div>
-
-  <a class="desce" href="#catalogo" aria-label="Ver o catálogo">
-    <span></span>
-  </a>
 </section>
 
 <!-- ============ 2. CATÁLOGO ============ -->
-<section class="sec sec--creme" id="catalogo" aria-labelledby="cat-t">
+<section class="sec sec--creme sec--curva" id="catalogo" aria-labelledby="cat-t">
+  <svg class="onda" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,58 C240,4 480,4 720,30 C960,56 1200,58 1440,18 L1440,90 L0,90 Z"/></svg>
   <div class="wrap">
     <header class="sec__cab reveal">
       <p class="rotulo">O que sai do forno</p>
@@ -156,82 +169,107 @@
       </p>
     </header>
 
-    <div class="filtros reveal" role="tablist" aria-label="Categorias">
-      <button class="filtro is-on" role="tab" aria-selected="true" data-f="todos">Tudo</button>
-      <button class="filtro" role="tab" aria-selected="false" data-f="paes">Pães</button>
-      <button class="filtro" role="tab" aria-selected="false" data-f="queijo">Pão de queijo</button>
-      <button class="filtro" role="tab" aria-selected="false" data-f="salgados">Salgados e lanches</button>
-      <button class="filtro" role="tab" aria-selected="false" data-f="bolos">Bolos e tortas</button>
-      <button class="filtro" role="tab" aria-selected="false" data-f="doces">Doces e biscoitos</button>
-    </div>
+  </div>
 
-    <ul class="grade" id="grade">
-      <li class="card reveal" data-cat="queijo">
-        <div class="card__foto"><img src="img/produtos/pao-de-queijo.jpg" alt="Pão de queijo" loading="lazy" width="1000" height="350"></div>
-        <div class="card__txt"><h3>Pão de queijo</h3><p>O mais elogiado depois do pão. Sai do forno o dia inteiro.</p></div>
-      </li>
-      <li class="card card--falta reveal" data-cat="paes">
-        <div class="card__foto card__foto--slot">
-          <span>Foto do <strong>pão de sal</strong><br><small>o produto mais elogiado da casa — ainda sem foto</small></span>
+  <!-- carrossel infinito: a trilha é duplicada no JS pra fazer o loop sem emenda -->
+  <div class="marquee reveal" aria-label="O que a padaria faz">
+    <ul class="marquee__trilha" id="trilha-catalogo">
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/pao-de-queijo.jpg" alt="Pão de queijo" loading="lazy" width="1000" height="350"></div>
+          <div class="card__txt"><h3>Pão de queijo</h3><p>O mais elogiado depois do pão. Sai do forno o dia inteiro.</p></div>
         </div>
-        <div class="card__txt"><h3>Pão de sal</h3><p>“O pão não tem outro igual.” É o que mais aparece nas avaliações.</p></div>
       </li>
-      <li class="card reveal" data-cat="paes">
-        <div class="card__foto"><img src="img/produtos/baguete.jpg" alt="Baguete" loading="lazy" width="780" height="300"></div>
-        <div class="card__txt"><h3>Baguete</h3><p>Casca dura, miolo macio. Sai quentinha na tarde.</p></div>
-      </li>
-      <li class="card card--falta reveal" data-cat="doces">
-        <div class="card__foto card__foto--slot">
-          <span>Foto da <strong>broa</strong><br><small>citada pelo nome nas avaliações</small></span>
+      <li class="card card--falta">
+        <div class="card__in">
+          <div class="card__foto card__foto--slot">
+            <span>Foto do <strong>pão de sal</strong><br><small>o produto mais elogiado da casa — ainda sem foto</small></span>
+          </div>
+          <div class="card__txt"><h3>Pão de sal</h3><p>“O pão não tem outro igual.” É o que mais aparece nas avaliações.</p></div>
         </div>
-        <div class="card__txt"><h3>Broa</h3><p>Das que o cliente cita pelo nome quando fala da Santa Helena.</p></div>
       </li>
-      <li class="card card--falta reveal" data-cat="doces">
-        <div class="card__foto card__foto--slot">
-          <span>Foto do <strong>biscoito de polvilho temperado</strong><br><small>preferido declarado de um cliente</small></span>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/baguete.jpg" alt="Baguete" loading="lazy" width="780" height="300"></div>
+          <div class="card__txt"><h3>Baguete</h3><p>Casca dura, miolo macio. Sai quentinha na tarde.</p></div>
         </div>
-        <div class="card__txt"><h3>Biscoito de polvilho temperado</h3><p>Tem gente que vem só por causa dele.</p></div>
       </li>
-      <li class="card reveal" data-cat="doces">
-        <div class="card__foto"><img src="img/produtos/croissant.jpg" alt="Croissant" loading="lazy" width="600" height="260"></div>
-        <div class="card__txt"><h3>Croissant</h3><p>Folhado, amanteigado, pro café da manhã.</p></div>
-      </li>
-      <li class="card reveal" data-cat="doces">
-        <div class="card__foto"><img src="img/produtos/queijadinha.jpg" alt="Queijadinhas" loading="lazy" width="900" height="500"></div>
-        <div class="card__txt"><h3>Queijadinha</h3><p>Com a cereja em cima, do jeito de sempre.</p></div>
-      </li>
-      <li class="card reveal" data-cat="doces">
-        <div class="card__foto"><img src="img/produtos/palha-italiana.jpg" alt="Palha italiana" loading="lazy" width="690" height="390"></div>
-        <div class="card__txt"><h3>Palha italiana</h3><p>Aquele docinho depois do almoço.</p></div>
-      </li>
-      <li class="card reveal" data-cat="bolos">
-        <div class="card__foto"><img src="img/produtos/bolo-de-banana.jpg" alt="Bolo de banana" loading="lazy" width="700" height="400"></div>
-        <div class="card__txt"><h3>Bolo de banana</h3><p>Banana caramelizada por cima. Some rápido.</p></div>
-      </li>
-      <li class="card reveal" data-cat="salgados">
-        <div class="card__foto"><img src="img/produtos/cachorro-quente.jpg" alt="Cachorro-quente assado" loading="lazy" width="720" height="430"></div>
-        <div class="card__txt"><h3>Cachorro-quente assado</h3><p>No pão da casa, coberto de batata palha.</p></div>
-      </li>
-      <li class="card reveal" data-cat="salgados">
-        <div class="card__foto"><img src="img/produtos/pastel.jpg" alt="Pastéis fritos" loading="lazy" width="1079" height="370"></div>
-        <div class="card__txt"><h3>Pastel</h3><p>Carne, frango, queijo e pizza. Ou um de cada.</p></div>
-      </li>
-      <li class="card reveal" data-cat="salgados">
-        <div class="card__foto"><img src="img/produtos/pizza.jpg" alt="Pizza" loading="lazy" width="1080" height="400"></div>
-        <div class="card__txt"><h3>Pizza</h3><p>Frango, calabresa e mista, pra levar pro fim de semana.</p></div>
-      </li>
-      <li class="card reveal" data-cat="paes">
-        <div class="card__foto"><img src="img/produtos/rosca.jpg" alt="Rosca de leite condensado" loading="lazy" width="820" height="470"></div>
-        <div class="card__txt"><h3>Rosca de leite condensado</h3><p>Coberta de coco ralado, pro café da tarde.</p></div>
-      </li>
-      <li class="card card--falta reveal" data-cat="queijo">
-        <div class="card__foto card__foto--slot">
-          <span>Foto da <strong>bola de pão de queijo</strong></span>
+      <li class="card card--falta">
+        <div class="card__in">
+          <div class="card__foto card__foto--slot">
+            <span>Foto da <strong>broa</strong><br><small>citada pelo nome nas avaliações</small></span>
+          </div>
+          <div class="card__txt"><h3>Broa</h3><p>Das que o cliente cita pelo nome quando fala da Santa Helena.</p></div>
         </div>
-        <div class="card__txt"><h3>Bola de pão de queijo</h3><p>Maior, pra dividir. Ou não.</p></div>
+      </li>
+      <li class="card card--falta">
+        <div class="card__in">
+          <div class="card__foto card__foto--slot">
+            <span>Foto do <strong>biscoito de polvilho temperado</strong><br><small>preferido declarado de um cliente</small></span>
+          </div>
+          <div class="card__txt"><h3>Biscoito de polvilho temperado</h3><p>Tem gente que vem só por causa dele.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/croissant.jpg" alt="Croissant" loading="lazy" width="600" height="260"></div>
+          <div class="card__txt"><h3>Croissant</h3><p>Folhado, amanteigado, pro café da manhã.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/queijadinha.jpg" alt="Queijadinhas" loading="lazy" width="900" height="500"></div>
+          <div class="card__txt"><h3>Queijadinha</h3><p>Com a cereja em cima, do jeito de sempre.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/palha-italiana.jpg" alt="Palha italiana" loading="lazy" width="690" height="390"></div>
+          <div class="card__txt"><h3>Palha italiana</h3><p>Aquele docinho depois do almoço.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/bolo-de-banana.jpg" alt="Bolo de banana" loading="lazy" width="700" height="400"></div>
+          <div class="card__txt"><h3>Bolo de banana</h3><p>Banana caramelizada por cima. Some rápido.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/cachorro-quente.jpg" alt="Cachorro-quente assado" loading="lazy" width="720" height="430"></div>
+          <div class="card__txt"><h3>Cachorro-quente assado</h3><p>No pão da casa, coberto de batata palha.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/pastel.jpg" alt="Pastéis fritos" loading="lazy" width="1079" height="370"></div>
+          <div class="card__txt"><h3>Pastel</h3><p>Carne, frango, queijo e pizza. Ou um de cada.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/pizza.jpg" alt="Pizza" loading="lazy" width="1080" height="400"></div>
+          <div class="card__txt"><h3>Pizza</h3><p>Frango, calabresa e mista, pra levar pro fim de semana.</p></div>
+        </div>
+      </li>
+      <li class="card">
+        <div class="card__in">
+          <div class="card__foto"><img src="img/produtos/rosca.jpg" alt="Rosca de leite condensado" loading="lazy" width="820" height="470"></div>
+          <div class="card__txt"><h3>Rosca de leite condensado</h3><p>Coberta de coco ralado, pro café da tarde.</p></div>
+        </div>
+      </li>
+      <li class="card card--falta">
+        <div class="card__in">
+          <div class="card__foto card__foto--slot">
+            <span>Foto da <strong>bola de pão de queijo</strong></span>
+          </div>
+          <div class="card__txt"><h3>Bola de pão de queijo</h3><p>Maior, pra dividir. Ou não.</p></div>
+        </div>
       </li>
     </ul>
+  </div>
 
+  <div class="wrap">
     <p class="mercearia reveal">
       E ainda tem o básico do dia a dia — leite, café, açúcar e a mercearia do
       bairro. Você resolve tudo numa parada só.
@@ -240,7 +278,8 @@
 </section>
 
 <!-- ============ 3. ENCOMENDAS ============ -->
-<section class="sec sec--marrom encomenda" id="encomendas" aria-labelledby="enc-t">
+<section class="sec sec--marrom encomenda sec--curva" id="encomendas" aria-labelledby="enc-t">
+  <svg class="onda" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,58 C240,4 480,4 720,30 C960,56 1200,58 1440,18 L1440,90 L0,90 Z"/></svg>
   <div class="wrap encomenda__in">
     <div class="reveal">
       <p class="rotulo rotulo--claro">Encomendas</p>
@@ -257,30 +296,37 @@
       </p>
     </div>
     <ul class="encomenda__lista reveal">
-      <li><strong>Bolos</strong><span>Aniversário, festa, bolo de pote</span></li>
-      <li><strong>Salgados</strong><span>Assados e fritos, por cento</span></li>
-      <li><strong>Tortas</strong><span>Doces e salgadas</span></li>
-      <li><strong>Pães</strong><span>Quantidade maior pro evento</span></li>
+      <li style="--bg:url('../img/produtos/bolo-de-banana.jpg')"><strong>Bolos</strong><span>Aniversário, festa, bolo de pote</span></li>
+      <li style="--bg:url('../img/produtos/pastel.jpg')"><strong>Salgados</strong><span>Assados e fritos, por cento</span></li>
+      <li style="--bg:url('../img/produtos/queijadinha.jpg')"><strong>Tortas</strong><span>Doces e salgadas</span></li>
+      <li style="--bg:url('../img/produtos/baguete.jpg')"><strong>Pães</strong><span>Quantidade maior pro evento</span></li>
     </ul>
   </div>
 </section>
 
 <!-- ============ 4. HISTÓRIA ============ -->
-<section class="sec sec--creme" id="historia" aria-labelledby="his-t">
+<section class="sec sec--creme sec--curva" id="historia" aria-labelledby="his-t">
+  <svg class="onda" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,58 C240,4 480,4 720,30 C960,56 1200,58 1440,18 L1440,90 L0,90 Z"/></svg>
   <div class="wrap">
     <header class="sec__cab reveal">
       <p class="rotulo">Nossa história</p>
       <h2 id="his-t" class="h2">Mudou a vitrine. <em class="script">O jeito não.</em></h2>
     </header>
 
-    <figure class="fila reveal">
-      <img src="img/historico/fachada-antiga.jpg" alt="A fachada antiga da Padaria Santa Helena, com cerca de vinte pessoas em fila na calçada">
-      <figcaption>
-        <strong>Essa fila é de outra década.</strong>
-        Mesma esquina, mesmo horário, mesma padaria. Mudou o letreiro e a rua
-        de paralelepípedo — a fila continua.
-      </figcaption>
-    </figure>
+    <div class="acervo reveal">
+      <figure class="acervo__item">
+        <img src="img/historico/fachada-antiga.jpg" alt="A fachada antiga da Padaria Santa Helena, com cerca de vinte pessoas em fila na calçada" loading="lazy">
+        <figcaption><span class="acervo__tag">Antes</span> A fila já dobrava a calçada.</figcaption>
+      </figure>
+      <figure class="acervo__item">
+        <img src="img/historico/balcao-antigo.jpg" alt="O balcão antigo da padaria, com banquetas de lanchonete e vitrines de vidro" loading="lazy">
+        <figcaption><span class="acervo__tag">Antes</span> O cantinho do café já existia.</figcaption>
+      </figure>
+    </div>
+    <p class="legenda acervo__nota">
+      Fotos do acervo da família. São de outra década — o granulado é a idade
+      delas, e a fila na porta é a mesma de hoje.
+    </p>
 
     <div class="casal reveal">
       <div class="casal__trigo" aria-hidden="true"><svg viewBox="0 0 120 400"><use href="#espiga"/></svg></div>
@@ -311,7 +357,8 @@
 </section>
 
 <!-- ============ 5. EQUIPE ============ -->
-<section class="sec sec--marrom" id="equipe" aria-labelledby="eq-t">
+<section class="sec sec--marrom sec--curva" id="equipe" aria-labelledby="eq-t">
+  <svg class="onda" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,58 C240,4 480,4 720,30 C960,56 1200,58 1440,18 L1440,90 L0,90 Z"/></svg>
   <div class="wrap">
     <header class="sec__cab reveal">
       <p class="rotulo rotulo--claro">Quem faz</p>
@@ -358,7 +405,9 @@
 </section>
 
 <!-- ============ 6. AVALIAÇÕES ============ -->
-<section class="sec sec--trigo" id="avaliacoes" aria-labelledby="av-t">
+<section class="sec sec--trigo sec--curva" id="avaliacoes" aria-labelledby="av-t">
+  <svg class="onda" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,58 C240,4 480,4 720,30 C960,56 1200,58 1440,18 L1440,90 L0,90 Z"/></svg>
+  <div class="fundo-vivo" aria-hidden="true"><span></span><span></span></div>
   <div class="wrap">
     <header class="sec__cab reveal">
       <p class="rotulo">O que dizem</p>
@@ -368,18 +417,19 @@
       </h2>
     </header>
     <ul class="depos">
-      <li class="reveal"><blockquote><p>“O pão não tem outro igual. A variedade de várias outras guloseimas e o excelente produto produzido são de deixar água na boca.”</p><cite>geraldonewton</cite></blockquote></li>
+      <li class="reveal"><blockquote><p>“O pão não tem outro igual. A variedade de várias outras guloseimas e o excelente produto produzido são de deixar água na boca.”</p><cite>Geraldo Newton</cite></blockquote></li>
       <li class="reveal"><blockquote><p>“Pão de queijo de tirar o chapéu, aprovado por mineiros. Local agradável para um bom café.”</p><cite>Cícero Romão</cite></blockquote></li>
-      <li class="reveal"><blockquote><p>“Tradicionalíssima, padaria sempre limpa, funcionários super alegres, passo lá todo fim de tarde.”</p><cite>saulo c</cite></blockquote></li>
-      <li class="reveal"><blockquote><p>“De boa qualidade, sempre na mesma pegada, nunca deixa falhar.”</p><cite>CaiqueSilva</cite></blockquote></li>
+      <li class="reveal"><blockquote><p>“Tradicionalíssima, padaria sempre limpa, funcionários super alegres, passo lá todo fim de tarde.”</p><cite>Saulo C.</cite></blockquote></li>
+      <li class="reveal"><blockquote><p>“De boa qualidade, sempre na mesma pegada, nunca deixa falhar.”</p><cite>Caique Silva</cite></blockquote></li>
       <li class="reveal"><blockquote><p>“A melhor Padaria do Vale do Aço, produtos deliciosos e de qualidade. Muita variedade, ótimo preço e atendimento.”</p><cite>Natália</cite></blockquote></li>
-      <li class="reveal"><blockquote><p>“Os funcionários sempre atenciosos e alegres. Gostaria que abrisse outra mais perto da minha casa.”</p><cite>Alexandre M</cite></blockquote></li>
+      <li class="reveal"><blockquote><p>“Os funcionários sempre atenciosos e alegres. Gostaria que abrisse outra mais perto da minha casa.”</p><cite>Alexandre M.</cite></blockquote></li>
     </ul>
   </div>
 </section>
 
 <!-- ============ 7. TEMPORADA ============ -->
-<section class="sec sec--creme temporada" id="temporada" aria-labelledby="tmp-t">
+<section class="sec sec--creme temporada sec--curva" id="temporada" aria-labelledby="tmp-t">
+  <svg class="onda" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,58 C240,4 480,4 720,30 C960,56 1200,58 1440,18 L1440,90 L0,90 Z"/></svg>
   <div class="wrap temporada__in reveal">
     <div>
       <p class="rotulo">Na época certa</p>
@@ -398,7 +448,8 @@
 </section>
 
 <!-- ============ 8. ONDE E QUANDO ============ -->
-<section class="sec sec--marrom" id="onde" aria-labelledby="onde-t">
+<section class="sec sec--marrom sec--curva" id="onde" aria-labelledby="onde-t">
+  <svg class="onda" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,58 C240,4 480,4 720,30 C960,56 1200,58 1440,18 L1440,90 L0,90 Z"/></svg>
   <div class="wrap onde">
     <div>
       <p class="rotulo rotulo--claro">Onde e quando</p>

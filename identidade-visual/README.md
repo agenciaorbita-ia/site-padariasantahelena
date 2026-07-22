@@ -55,6 +55,24 @@ Calculado em WCAG. Mínimo pra texto normal é 4,5:1.
 **Regra prática:** dourado nunca carrega texto sobre fundo claro. Dourado é
 fundo, filete ou detalhe. Quem escreve é o marrom e o creme.
 
+### O dourado que pode escrever
+
+Em 22/07/2026, a auditoria do site mostrou que essa regra estava sendo violada
+no próprio site — o âmbar aparecia como cor de texto em rótulo de seção, nome de
+quem avaliou, anos da linha do tempo e assinatura do rodapé.
+
+A saída não foi abandonar o dourado, e sim **criar uma segunda cor só pra
+texto**, escurecida até passar:
+
+| Token | Hex | Papel |
+| --- | --- | --- |
+| `--ambar` | `#CD913B` | **Só decoração.** Filete, borda, ícone, tracejado, miolo do carimbo |
+| `--ambar-txt` | `#8F5E19` | **Texto.** 5,04:1 sobre creme |
+| `--tinta-2` | `#755A4B` | Texto secundário sobre claro. 5,74:1 |
+
+**Exceção que não tem jeito:** sobre o fundo trigo `#E1B76B`, nem o `--ambar-txt`
+passa (2,96:1). Ali quem escreve é o marrom — 6,58:1.
+
 ### Como a paleta conversa com a marca
 
 Marrom de pão assado, dourado de casca, creme de miolo. Nada aqui é decoração —

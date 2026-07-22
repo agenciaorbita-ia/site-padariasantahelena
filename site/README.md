@@ -51,6 +51,8 @@ Tudo em CSS + `IntersectionObserver`. Sem GSAP, sem biblioteca.
 
 | Onde | O quê |
 | --- | --- |
+| **Título da abertura** | **Palavra que gira** — "Tem fila na porta pelo *pão / pão de queijo / bolo de fubá / café da tarde / croissant*". A palavra sobe e sai por cima, a próxima entra por baixo, e a caixa acompanha a largura pra não abrir buraco |
+| **Cards do catálogo** | **Borda de gradiente girando** — cônico de âmbar → trigo → marrom dando a volta na borda ao passar o mouse. Os cards sem foto giram sozinhos, mais devagar |
 | Abertura | Entrada em cascata (`--d` por elemento, 0 a 820 ms) |
 | Colagem | As três fotos flutuam em durações diferentes (7s, 8,5s, 10s) e têm parallax em velocidades diferentes — a do meio anda ao contrário, o que dá profundidade |
 | Carimbo | Texto circular girando em 26s, com a espiga parada no miolo |
@@ -60,7 +62,83 @@ Tudo em CSS + `IntersectionObserver`. Sem GSAP, sem biblioteca.
 | Casal fundador | Zoom leve na foto ao passar o mouse |
 | Seta de rolar | Pontinho descendo em loop |
 
+| **Cards de encomenda** | Deslizam pra direita no hover, com filete dourado correndo pela borda de baixo e o nome abrindo o espaçamento |
+| **Cards de avaliação** | Sobem e crescem de leve, com aspa gigante girando no canto |
+| **Fundo das avaliações** | Duas manchas de luz vagando devagar atrás dos depoimentos |
+| **Acervo antigo** | As duas fotos sobem e dão zoom no hover |
+| **Curva entre seções** | Onda separando toda seção da anterior, na cor de quem chega |
+
 Tudo respeita `prefers-reduced-motion`.
+
+## Auditoria responsiva + logo (5ª leva, 22/07/2026)
+
+Rodei o `/responsive-design` medindo em 320, 360, 390, 414, 600, 768, 1024,
+1280, 1440px — no navegador de verdade, não no papel.
+
+Achados e correções:
+
+- **Botão do menu hambúrguer era 40×32** (abaixo de 44×44). Agora é 44×44 cheio
+- **O WhatsApp do topo sumia no mobile sem substituto** — o CTA principal ficava
+  inacessível. Adicionado "Chamar no WhatsApp" no fim do menu do celular
+- **Tags decorativas em 11px** (etiqueta "Antes", "32 anos", "771 avaliações")
+  subiram pra ≥12px
+- Confirmado: **sem `100vh`** (o bug clássico de altura no mobile), sem largura
+  fixa que estoure (todas são media query ou `max-width`), sem overflow
+  horizontal em nenhuma largura, todos os alvos ≥44px
+
+**Logo nova + tamanho.** Chegaram versões com recorte mais justo
+(`dados/logo/*-v2.png`). O problema de "logo pequena no header" é a forma dela:
+empilhada (DESDE 1968 / espiga / Santa Helena / PADARIA), então limitar a altura
+encolhe o nome. Solução: logo 68–84px **com margem negativa no `.topo__marca`**,
+pra ela sangrar um pouco e ficar legível **sem inchar o header** (segue ~77px no
+desktop, 61px no mobile).
+
+## Ajustes da rodada de 22/07/2026 (4ª leva)
+
+- **Header reequilibrado**: 111px era demais. Logo pra 56–66px, header em ~77px
+- **Corrigido bug do status**: ao remover a seta de rolar (3ª leva), o script
+  deixou o corpo das regras `.desce` órfão no CSS, o que quebrou o parsing e
+  derrubou o estilo do `.status` logo abaixo — a cápsula branca com bolinha
+  verde virou texto solto. Removidas as linhas órfãs; o badge voltou
+- **Removida a faixa de avaliações rolando** (o marquee de depoimentos do
+  Google da 3ª leva). A grade de 6 avaliações continua
+- Lição: nunca filtrar linhas de CSS por prefixo de seletor via script — remove
+  o seletor e deixa o corpo. Editar o bloco inteiro à mão
+
+## Ajustes da rodada de 22/07/2026 (3ª leva)
+
+- **Logo do cabeçalho** de novo maior: 72–96px (era 52–68)
+- **Seta de rolar removida** do hero (HTML + CSS)
+- **Catálogo virou carrossel infinito** (`marquee`): os 14 cards rolam em loop
+  sem emenda, ~4-5 visíveis, pausam no hover, pontas esmaecidas. A trilha é
+  duplicada no JS; a animação anda -50%. Os filtros de categoria saíram — não
+  fazem sentido num carrossel automático
+- **Encomendas com foto de fundo**: cada card (Bolos, Salgados, Tortas, Pães)
+  tem a foto do produto ao fundo, com véu marrom degradê da esquerda pro texto
+  aparecer. Zoom na foto no hover. A imagem vem por `--bg` inline; caminho
+  `../img/` porque URL em custom property resolve relativa ao CSS
+- **Avaliações**: mantida a grade de 6 + adicionada **faixa marquee** com mais 5
+  avaliações rolando (Ernani, Anderson, Jéssica, etc.)
+- **Fundo das avaliações corrigido**: a mancha de luz clara encostava na borda
+  superior e revelava a linha da curva. Agora começa abaixo da onda e é mais
+  suave
+- **Auditoria completa** (3ª vez): 0 falhas de contraste, 0 alvos <44px, 0 sem
+  alt, sem overflow, 1 H1, hierarquia correta — desktop e mobile
+
+## Ajustes da rodada de 22/07/2026 (2ª leva)
+
+- **Favicon próprio** — `img/marca/favicon.svg`: selo circular marrom com a
+  espiga dourada. O antigo era o PNG largo da logo, que encolhia demais
+- **Logo do cabeçalho** de 46px pra 52–68px (fluido)
+- **Curva entre todas as seções** — antes só o rodapé tinha. Cada seção desenha
+  a onda no topo, com a cor dela, cobrindo a de cima. Precisa de `:has()`; sem
+  ele, a folga vem pela classe `.sec--curva`
+- **Encomendas**: cards animados + o botão ganhou `margin-top` (estava colado)
+- **História**: a foto única virou **duas fotos lado a lado, menores** (o acervo
+  é de baixa resolução; grande, a granulação aparece demais)
+- **Avaliações**: nomes com inicial maiúscula (Geraldo Newton, Saulo C., Caique
+  Silva, Alexandre M.), cards animados e fundo com movimento
+- **Temporada**: `margin-top` no botão, mesmo problema das encomendas
 
 ## O que o JS faz
 
@@ -71,6 +149,34 @@ Tudo respeita `prefers-reduced-motion`.
 | 3 | **Parallax** — só acima de 900 px. Desligado no celular de propósito. Velocidade por elemento via `data-flut` |
 | 4 | **Filtro do catálogo** |
 | 5 | **Menu do celular** |
+
+## As duas features do 21st.dev
+
+Pedidas em 22/07/2026: [animated-hero](https://21st.dev/@tommyjepsen/components/animated-hero)
+e [animated-gradient-border](https://21st.dev/@easemize/components/animated-gradient-border).
+
+**Os dois originais são React + framer-motion + Tailwind + shadcn.** Este site é
+HTML/CSS/JS puro, sem build. Instalar React aqui custaria ~40 KB de JavaScript
+num site aberto no 4G, na rua — então os efeitos foram **refeitos nativamente**.
+
+| | Original | Aqui |
+| --- | --- | --- |
+| Palavra girando | framer-motion `AnimatePresence` + spring | `translate` + `transition` com curva elástica; largura da caixa medida em JS e animada |
+| Borda em gradiente | componente React com props | `@property --anel` + `conic-gradient` + camada `.card__in` por cima recortando o anel |
+
+**Peso da implementação: 0 KB de biblioteca.** ~40 linhas de CSS e ~35 de JS.
+
+Detalhes que valem lembrar:
+
+- A palavra que gira tem a lista completa lida por leitor de tela (`.sr`), e a
+  parte animada é `aria-hidden` — senão o leitor repetiria a frase a cada 2,4s
+- A medição da largura espera `document.fonts.ready`. Sem isso ela media com a
+  fonte de reserva e a caixa ficava do tamanho errado
+- O `--anel` do CSS não tem relação com o `id="volta"` do SVG do carimbo —
+  foram renomeados justamente pra não confundir
+- **Os cards sem foto giram sozinhos** (6s) e aceleram no hover (3s). Foi
+  escolha: fazer os 14 cards girarem ao mesmo tempo viraria circo e gastaria
+  bateria. Girar só os que faltam foto puxa o olho pro que o cliente precisa ver
 
 ## Decisões que valem lembrar
 

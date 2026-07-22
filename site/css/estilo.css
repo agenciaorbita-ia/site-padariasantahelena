@@ -8,10 +8,13 @@
   --marrom:#492E25;
   --marrom-2:#5E3D31;
   --trigo:#E1B76B;
-  --ambar:#CD913B;
+  --ambar:#CD913B;      /* SÓ decoração: filete, borda, ícone, tracejado. Nunca texto sobre claro (2,47:1) */
+  --ambar-txt:#8F5E19;  /* a versão do âmbar que pode carregar texto: 5,04:1 sobre creme */
   --creme:#FFF2E2;
   --creme-2:#FBEAD6;
   --branco:#FFFCF8;
+  --tinta-2:#755A4B;    /* texto secundário sobre claro: 5,74:1 */
+  --verde-zap:#12803E;  /* branco em cima dá 5,02:1 */
 
   /* Yellowtail: plano B da pesquisa de fontes. A 1ª opção era Telma (Fontshare),
      mas a API da Fontshare está bloqueada — ver FONTES.md. */
@@ -45,20 +48,37 @@ a{color:inherit}
 .pular{position:absolute;left:-999px;top:0;background:var(--marrom);color:var(--creme);padding:.75rem 1.25rem;z-index:200}
 .pular:focus{left:0}
 
+/* Foco visível — o padrão do navegador some sobre marrom e sobre trigo.
+   Anel duplo: escuro por dentro, claro por fora, funciona nos dois fundos. */
+:focus-visible{
+  outline:3px solid var(--marrom);
+  outline-offset:3px;
+  border-radius:4px;
+  box-shadow:0 0 0 6px var(--creme);
+}
+.sec--marrom :focus-visible,.casal :focus-visible{
+  outline-color:var(--trigo);
+  box-shadow:0 0 0 6px rgba(73,46,37,.85);
+}
+/* toque sem atraso de 300ms */
+a,button,input,[role="tab"]{touch-action:manipulation}
+
 /* ---------- tipografia ---------- */
 .rotulo{
   font-family:var(--f-titulo);font-weight:200;font-size:.78rem;
-  text-transform:uppercase;letter-spacing:.18em;color:var(--ambar);
+  text-transform:uppercase;letter-spacing:.18em;color:var(--ambar-txt);
   margin:0 0 .9rem;
 }
 .rotulo--claro{color:var(--trigo)}
+/* sobre o fundo trigo, nem o âmbar-texto passa (2,96:1) — quem escreve é o marrom */
+.sec--trigo .rotulo{color:var(--marrom)}
 
 .h2,.hero__h1{
   font-family:var(--f-titulo);font-weight:800;
   line-height:1.08;letter-spacing:-.02em;margin:0 0 1rem;
   text-wrap:balance;
 }
-.hero__h1{font-size:clamp(2.125rem,6.5vw,4rem)}
+.hero__h1{font-size:clamp(1.95rem,5vw,3.5rem)}
 .h2{font-size:clamp(1.75rem,4.4vw,2.9rem)}
 .h2--claro{color:var(--creme)}
 
@@ -74,7 +94,7 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 
 .sec__lead{max-width:56ch;margin:0;color:#6A4C3F;font-size:1.05rem}
 .sec__lead--claro{color:#E7D3BC}
-.legenda{font-size:.9rem;color:#8A6A5A;margin:.9rem 0 0}
+.legenda{font-size:.9rem;color:var(--tinta-2);margin:.9rem 0 0}
 .legenda--clara{color:#C4A992}
 
 /* ---------- botões ---------- */
@@ -94,8 +114,8 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 .btn--vazado:hover{background:var(--marrom);color:var(--creme)}
 .btn--vazado-claro{border-color:var(--trigo);color:var(--trigo)}
 .btn--vazado-claro:hover{background:var(--trigo);color:var(--marrom)}
-.btn--zap{background:#1FA855;color:#fff;padding:.6rem 1.15rem;font-size:.9rem}
-.btn--zap:hover{background:#17904a}
+.btn--zap{background:var(--verde-zap);color:#fff;padding:.6rem 1.15rem;font-size:.9rem}
+.btn--zap:hover{background:#0D6630}
 
 /* ---------- topo ---------- */
 .topo{
@@ -103,22 +123,35 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
   background:rgba(255,252,248,.94);backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(73,46,37,.09);
 }
-.topo__in{display:flex;align-items:center;gap:1.5rem;padding:.6rem 0}
-.topo__marca img{width:auto;height:46px}
+.topo__in{display:flex;align-items:center;gap:1.5rem;padding:.15rem 0}
+.topo__marca{display:flex;align-items:center;margin:-.4rem 0} /* deixa a logo sangrar um pouco sem inchar o header */
+.topo__marca img{width:auto;height:clamp(68px,6.5vw,84px);transition:transform .3s ease}
+.topo__marca:hover img{transform:scale(1.04)}
 .topo__nav{display:flex;gap:1.5rem;margin-left:auto}
 .topo__nav a{
   font-family:var(--f-titulo);font-weight:500;font-size:.95rem;
-  text-decoration:none;padding:.3rem 0;position:relative;
+  text-decoration:none;position:relative;
+  display:inline-flex;align-items:center;min-height:44px; /* alvo de toque */
 }
 .topo__nav a::after{
-  content:'';position:absolute;left:0;bottom:0;height:2px;width:0;
+  content:'';position:absolute;left:0;bottom:9px;height:2px;width:0;
   background:var(--ambar);transition:width .25s ease;
 }
 .topo__nav a:hover::after{width:100%}
-.topo__menu{display:none;flex-direction:column;gap:5px;background:none;border:0;padding:.5rem;margin-left:auto;cursor:pointer}
-.topo__menu span{display:block;width:24px;height:2px;background:var(--marrom)}
+.topo__menu{
+  display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  width:44px;height:44px; /* alvo de toque cheio */
+  background:none;border:0;margin-left:auto;cursor:pointer;
+}
+.topo__menu span{display:block;width:24px;height:2px;background:var(--marrom);border-radius:2px}
 .navmob{display:none;flex-direction:column;padding:.5rem 1.25rem 1.25rem;border-top:1px solid rgba(73,46,37,.09)}
-.navmob a{padding:.7rem 0;text-decoration:none;font-family:var(--f-titulo);font-weight:500;border-bottom:1px solid rgba(73,46,37,.07)}
+.navmob a{
+  display:flex;align-items:center;min-height:48px; /* linha confortável no toque */
+  text-decoration:none;font-family:var(--f-titulo);font-weight:500;
+  border-bottom:1px solid rgba(73,46,37,.07);
+}
+/* o WhatsApp entra no menu do celular, já que o do topo some */
+.navmob .btn--zap{margin-top:1rem;justify-content:center;min-height:48px}
 
 /* ---------- hero ---------- */
 .hero{
@@ -135,7 +168,29 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 @keyframes balanca{0%,100%{transform:rotate(9deg) translateY(0)}50%{transform:rotate(13deg) translateY(-14px)}}
 
 .hero__in{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(2rem,4vw,3.5rem);align-items:center;position:relative}
-.hero__h1 span{display:block}
+.hero__texto{min-width:0}
+.hero__h1>span{display:block}
+
+/* --- palavra que gira (efeito do animated-hero, feito em CSS) --- */
+.gira{display:flex!important;align-items:center;gap:.28em;flex-wrap:nowrap}
+.gira__fixo{flex:none;line-height:1.15}
+.gira__caixa{
+  position:relative;display:block;flex:none;
+  height:1.15em;overflow:hidden;
+  width:var(--w,6ch);max-width:100%;
+  transition:width .55s cubic-bezier(.22,1.2,.36,1); /* a caixa acompanha a palavra */
+}
+.gira__p{
+  position:absolute;inset:0;white-space:nowrap;
+  display:flex;align-items:center;line-height:1.15;
+  color:var(--ambar-txt);
+  opacity:0;translate:0 100%;
+  transition:translate .55s cubic-bezier(.22,1.2,.36,1),opacity .35s ease;
+}
+/* em tela bem estreita a palavra longa encolhe pra não sumir na borda */
+@media (max-width:400px){ .gira__p{font-size:.92em} }
+.gira__p.is-on{opacity:1;translate:0 0}
+.gira__p.is-out{opacity:0;translate:0 -100%}
 .hero__sub{max-width:44ch;color:#6A4C3F;font-size:1.1rem;margin:0 0 1.4rem}
 
 /* --- colagem de produtos --- */
@@ -167,7 +222,7 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
   animation:aparece .85s ease forwards var(--d,0ms), flutua 6s ease-in-out infinite -1s;
 }
 .selo-nota strong{font-family:var(--f-titulo);font-weight:800;font-size:1.9rem;color:var(--trigo);line-height:1}
-.selo-nota>span{font-size:.72rem;line-height:1.25;color:#E2CDB4}
+.selo-nota>span{font-size:.75rem;line-height:1.25;color:#E2CDB4}
 
 /* --- carimbo circular giratório --- */
 .carimbo{
@@ -183,17 +238,6 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 }
 .carimbo__miolo svg{position:static;width:52%;height:auto;color:var(--creme);animation:none}
 @keyframes gira{to{rotate:360deg}}
-
-/* --- seta de rolar --- */
-.desce{
-  position:absolute;left:50%;bottom:.5rem;translate:-50% 0;z-index:5;
-  width:24px;height:38px;border:2px solid rgba(73,46,37,.22);border-radius:100px;
-  display:grid;place-items:start center;padding-top:6px;
-  transition:border-color .25s ease;
-}
-.desce:hover{border-color:var(--ambar)}
-.desce span{width:4px;height:8px;border-radius:4px;background:var(--ambar);animation:desliza 1.8s ease-in-out infinite}
-@keyframes desliza{0%{opacity:0;translate:0 0}30%{opacity:1}100%{opacity:0;translate:0 16px}}
 
 .status{
   display:inline-flex;align-items:center;gap:.65rem;
@@ -223,26 +267,101 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 .sec--trigo{background:var(--trigo)}
 .sec__cab{margin-bottom:2rem;max-width:62ch}
 
+/* ---------- a curva que separa as seções ----------
+   Mesma onda do rodapé, agora entre todas. A curva sai PRA CIMA da seção,
+   pintada com a cor dela, cobrindo o rodapé da seção anterior. */
+:root{ --h-onda:clamp(38px,4.5vw,66px) }
+
+.sec>.onda{
+  position:absolute;top:0;left:0;z-index:2;
+  display:block;width:100%;height:var(--h-onda);
+  transform:translateY(-99%); /* 99% e não 100% pra não abrir fresta de 1px */
+}
+.sec--creme>.onda{fill:var(--creme)}
+.sec--marrom>.onda{fill:var(--marrom)}
+.sec--trigo>.onda{fill:var(--trigo)}
+
+/* quem vem antes precisa de folga embaixo, senão a curva come o conteúdo */
+.hero,.sec{padding-bottom:calc(clamp(2.75rem,5vw,4.25rem) + var(--h-onda))}
+.sec--curva{padding-top:clamp(2.75rem,5vw,4.25rem)}
+
 /* ---------- catálogo ---------- */
 .filtros{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem}
 .filtro{
   font-family:var(--f-titulo);font-weight:500;font-size:.9rem;
-  padding:.5rem 1.05rem;border-radius:100px;cursor:pointer;
+  padding:.6rem 1.15rem;border-radius:100px;cursor:pointer;
+  min-height:44px; /* alvo de toque */
   background:transparent;border:1.5px solid rgba(73,46,37,.22);color:var(--marrom);
   transition:background .2s,border-color .2s,color .2s;
 }
 .filtro:hover{border-color:var(--marrom)}
 .filtro.is-on{background:var(--marrom);border-color:var(--marrom);color:var(--creme)}
 
+/* ---------- carrossel infinito (marquee) ----------
+   A trilha é duplicada no JS. A animação anda -50% da largura total,
+   e como a 2ª metade é cópia da 1ª, o loop não tem emenda. */
+.marquee{
+  position:relative;width:100%;overflow:hidden;
+  /* esmaece as pontas pra dar sensação de "eterno" */
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+}
+.marquee__trilha{
+  list-style:none;margin:0;padding:.75rem 0;display:flex;gap:1.35rem;width:max-content;
+  animation:corre var(--dur,42s) linear infinite;
+}
+.marquee:hover .marquee__trilha{animation-play-state:paused}
+@keyframes corre{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* cada card no marquee tem largura fixa: ~4 aparecem por vez */
+.marquee .card{flex:0 0 clamp(230px,23vw,290px)}
+.marquee .card.reveal{opacity:1;transform:none} /* nunca escondido no marquee */
+
+
 .grade{list-style:none;margin:0;padding:0;display:grid;gap:1.35rem;grid-template-columns:repeat(auto-fill,minmax(255px,1fr))}
+/* ---- borda de gradiente girando (efeito animated-gradient-border) ----
+   Um cônico girando atrás do card, recortado em anel pelo próprio card
+   opaco por cima. Sem biblioteca: só @property + conic-gradient. */
+@property --anel{ syntax:'<angle>'; initial-value:0deg; inherits:false }
+@keyframes roda{ to{ --anel:360deg } }
+
 .card{
-  position:relative;background:var(--branco);border-radius:var(--raio);overflow:hidden;
+  position:relative;border-radius:var(--raio);
+  padding:2px;                       /* a espessura da borda */
+  background:rgba(73,46,37,.10);     /* borda parada, quando não gira */
   box-shadow:0 4px 20px rgba(73,46,37,.08);
   transition:transform var(--t),box-shadow var(--t);
   will-change:transform;
+  isolation:isolate;
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;z-index:0;
+  background:conic-gradient(from var(--anel),
+    transparent 0deg,
+    var(--ambar) 55deg,
+    var(--trigo) 110deg,
+    var(--marrom) 170deg,
+    transparent 230deg,
+    transparent 360deg);
+  opacity:0;transition:opacity .4s ease;
+}
+.card__in{
+  position:relative;z-index:1;background:var(--branco);
+  border-radius:calc(var(--raio) - 2px);overflow:hidden;height:100%;
+  display:flex;flex-direction:column;
 }
 .card:hover{transform:translateY(-7px) rotate(-.5deg);box-shadow:0 20px 48px rgba(73,46,37,.2)}
 .card:nth-child(even):hover{rotate:.5deg}
+.card:hover::before,.card:focus-within::before{opacity:1;animation:roda 3.5s linear infinite}
+
+/* os cards sem foto giram sozinhos — é o que puxa o olho pro que falta */
+.card--falta::before{opacity:.9;animation:roda 6s linear infinite}
+.card--falta:hover::before{opacity:1;animation-duration:3s}
+
+/* navegador sem @property: a borda fica parada, nada quebra */
+@supports not (background: conic-gradient(from var(--anel), red, blue)){
+  .card::before{display:none}
+  .card:hover{background:var(--ambar)}
+}
 
 .card__foto{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--creme-2)}
 .card__foto img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.22,.61,.36,1)}
@@ -256,7 +375,7 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 }
 .card:hover .card__foto::after{translate:120% 0}
 
-.card__txt{position:relative;padding:1.15rem 1.25rem 1.35rem}
+.card__txt{position:relative;padding:1.15rem 1.25rem 1.35rem;flex:1}
 .card__txt h3{transition:color .25s ease}
 .card:hover .card__txt h3{color:var(--ambar)}
 /* filete dourado que cresce sob o nome */
@@ -273,7 +392,7 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
   border:2px dashed var(--ambar);background:repeating-linear-gradient(45deg,var(--creme),var(--creme) 10px,var(--creme-2) 10px,var(--creme-2) 20px);
 }
 .card__foto--slot span{font-family:var(--f-titulo);font-size:.88rem;color:var(--marrom);line-height:1.45}
-.card__foto--slot small{display:block;margin-top:.35rem;font-size:.76rem;color:#8A6A5A}
+.card__foto--slot small{display:block;margin-top:.35rem;font-size:.76rem;color:var(--tinta-2)}
 .card--falta{outline:1px solid rgba(205,145,59,.35)}
 
 .mercearia{
@@ -284,24 +403,71 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 
 /* ---------- encomendas ---------- */
 .encomenda__in{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2rem,5vw,4rem);align-items:center}
-.encomenda__obs{font-size:.88rem;color:#C4A992;margin:1rem 0 0}
-.encomenda__lista{list-style:none;margin:0;padding:0;display:grid;gap:.75rem}
+/* o botão precisava de ar: o texto acima estava colado nele */
+.encomenda .btn--trigo{margin-top:1.75rem}
+.encomenda__obs{font-size:.88rem;color:#C4A992;margin:1.25rem 0 0}
+
+.encomenda__lista{list-style:none;margin:0;padding:0;display:grid;gap:.85rem}
 .encomenda__lista li{
-  background:rgba(255,242,226,.07);border:1px solid rgba(225,183,107,.25);
-  border-radius:var(--raio);padding:1rem 1.25rem;display:flex;flex-direction:column;
+  position:relative;overflow:hidden;isolation:isolate;
+  border:1px solid rgba(225,183,107,.25);
+  border-radius:var(--raio);padding:1.25rem 1.4rem;min-height:96px;
+  display:flex;flex-direction:column;justify-content:center;
+  transition:transform .4s cubic-bezier(.22,.61,.36,1),border-color .3s ease;
 }
-.encomenda__lista strong{font-family:var(--f-titulo);font-weight:700;color:var(--trigo)}
+/* a foto do produto entra como fundo (via --bg), esmaecida e com zoom no hover */
+.encomenda__lista li::before{
+  content:'';position:absolute;inset:0;z-index:-2;
+  background:var(--bg) center/cover no-repeat;
+  transform:scale(1.02);transition:transform .6s cubic-bezier(.22,.61,.36,1);
+}
+.encomenda__lista li:hover::before{transform:scale(1.1)}
+/* véu marrom degradê da esquerda, pro texto aparecer sobre a foto */
+.encomenda__lista li::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(90deg,var(--marrom) 6%,rgba(73,46,37,.86) 42%,rgba(73,46,37,.42) 100%);
+  transition:background .3s ease;
+}
+.encomenda__lista li:hover{transform:translateX(10px);border-color:var(--trigo)}
+.encomenda__lista li:hover::after{
+  background:linear-gradient(90deg,var(--marrom) 4%,rgba(73,46,37,.8) 38%,rgba(73,46,37,.35) 100%);
+}
+.encomenda__lista strong{
+  font-family:var(--f-titulo);font-weight:700;color:var(--trigo);
+  transition:letter-spacing .35s ease;
+}
+.encomenda__lista li:hover strong{letter-spacing:.03em}
 .encomenda__lista span{font-size:.9rem;color:#D9C3AA}
 
-/* ---------- a fila ---------- */
-.fila{margin:0 0 3rem;position:relative;border-radius:var(--raio);overflow:hidden;box-shadow:var(--sombra)}
-.fila img{width:100%;aspect-ratio:16/8;object-fit:cover;object-position:center 40%}
-.fila figcaption{
-  position:absolute;left:0;right:0;bottom:0;padding:3.5rem 1.75rem 1.5rem;
-  background:linear-gradient(to top,rgba(43,25,19,.92) 30%,transparent);
-  color:var(--creme);font-size:1rem;line-height:1.55;max-width:62ch;
+/* ---------- acervo: duas fotos antigas lado a lado ----------
+   Menores de propósito: o arquivo é de baixa resolução e em tamanho
+   grande a granulação aparece demais. */
+.acervo{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:.75rem}
+.acervo__item{
+  margin:0;position:relative;border-radius:var(--raio);overflow:hidden;
+  box-shadow:var(--sombra);
+  transition:transform .45s cubic-bezier(.22,.61,.36,1),box-shadow .45s ease;
 }
-.fila figcaption strong{display:block;font-family:var(--f-titulo);font-weight:700;font-size:1.35rem;color:var(--trigo);margin-bottom:.3rem}
+.acervo__item:hover{transform:translateY(-5px);box-shadow:0 20px 48px rgba(73,46,37,.24)}
+.acervo__item img{
+  width:100%;aspect-ratio:16/10;object-fit:cover;object-position:center 42%;
+  filter:saturate(.88) contrast(1.04);
+  transition:transform .8s cubic-bezier(.22,.61,.36,1),filter .45s ease;
+}
+.acervo__item:hover img{transform:scale(1.05);filter:saturate(1) contrast(1.06)}
+.acervo__item figcaption{
+  position:absolute;left:0;right:0;bottom:0;padding:2.75rem 1.25rem 1.1rem;
+  background:linear-gradient(to top,rgba(43,25,19,.93) 35%,transparent);
+  color:var(--creme);font-size:.95rem;line-height:1.5;
+}
+.acervo__tag{
+  display:inline-block;margin-right:.5rem;
+  font-family:var(--f-titulo);font-weight:400;font-size:.75rem;
+  text-transform:uppercase;letter-spacing:.16em;color:var(--trigo);
+  border:1px solid rgba(225,183,107,.5);border-radius:100px;padding:.18rem .65rem;
+}
+.acervo__nota{margin-bottom:2.5rem;max-width:62ch}
+@media (max-width:640px){ .acervo{grid-template-columns:1fr} }
 
 /* ---------- o casal fundador ---------- */
 .casal{
@@ -323,7 +489,7 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 .casal__nota{border-left:2px solid var(--ambar);padding-left:1rem;font-size:.94rem!important;color:#C4A992!important;margin-bottom:0!important}
 
 .linha-tempo{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;border-top:2px solid rgba(205,145,59,.3);padding-top:1.75rem}
-.linha-tempo .ano{font-family:var(--f-titulo);font-weight:800;font-size:1.75rem;color:var(--ambar);display:block;line-height:1}
+.linha-tempo .ano{font-family:var(--f-titulo);font-weight:800;font-size:1.75rem;color:var(--ambar-txt);display:block;line-height:1}
 .linha-tempo p{margin:.5rem 0 0;font-size:.95rem;color:#6A4C3F}
 
 /* ---------- equipe ---------- */
@@ -332,7 +498,7 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 .destaque img{width:110px;height:110px;object-fit:cover;border-radius:50%;flex:none;border:3px solid var(--trigo)}
 .destaque h3{color:var(--creme);margin:.15rem 0 .3rem}
 .destaque p{margin:0;font-size:.92rem;color:#D9C3AA}
-.anos{font-family:var(--f-titulo);font-weight:200;font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;color:var(--trigo)}
+.anos{font-family:var(--f-titulo);font-weight:400;font-size:.78rem;text-transform:uppercase;letter-spacing:.16em;color:var(--trigo)}
 
 .equipe__titulo{font-family:var(--f-titulo);font-weight:200;font-size:.78rem;text-transform:uppercase;letter-spacing:.18em;color:var(--trigo);margin:0 0 1.25rem}
 .equipe{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:1rem}
@@ -340,20 +506,70 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 
 /* ---------- depoimentos ---------- */
 .nota{font-family:var(--f-titulo);font-weight:800;font-size:1.35em;color:var(--marrom)}
+
+/* fundo com movimento: duas manchas quentes girando devagar atrás da seção.
+   Vão num container próprio com overflow:hidden — se fosse na seção, ela
+   cortaria a própria curva, que sai pra fora do topo. */
+/* começa abaixo da curva (top da seção fica sob a onda) pra a mancha clara
+   não encostar na borda e revelar a linha da divisória */
+.fundo-vivo{position:absolute;inset:clamp(70px,7vw,110px) 0 0;overflow:hidden;pointer-events:none;z-index:0}
+.fundo-vivo span{position:absolute;border-radius:50%;display:block;filter:blur(8px)}
+.fundo-vivo span:nth-child(1){
+  width:40vw;height:40vw;top:6%;left:-14%;
+  background:radial-gradient(circle,rgba(255,242,226,.42),transparent 70%);
+  animation:vagueia 22s ease-in-out infinite;
+}
+.fundo-vivo span:nth-child(2){
+  width:36vw;height:36vw;bottom:-16%;right:-10%;
+  background:radial-gradient(circle,rgba(73,46,37,.14),transparent 70%);
+  animation:vagueia 28s ease-in-out infinite reverse;
+}
+@keyframes vagueia{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(6%,4%) scale(1.1)}
+  66%{transform:translate(-4%,7%) scale(.95)}
+}
+#avaliacoes>.wrap{position:relative;z-index:1}
+
 .depos{list-style:none;margin:0;padding:0;display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
-.depos blockquote{margin:0;background:var(--creme);border-radius:var(--raio);padding:1.5rem;height:100%;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 18px rgba(73,46,37,.1)}
-.depos p{margin:0 0 1rem;font-size:.98rem;line-height:1.6}
-.depos cite{font-family:var(--f-titulo);font-weight:500;font-style:normal;font-size:.85rem;color:var(--ambar)}
+.depos blockquote{
+  position:relative;margin:0;background:var(--creme);border-radius:var(--raio);
+  padding:1.5rem;height:100%;display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 4px 18px rgba(73,46,37,.1);overflow:hidden;
+  transition:transform .45s cubic-bezier(.22,.61,.36,1),box-shadow .45s ease;
+}
+/* aspas gigantes que crescem no hover */
+.depos blockquote::before{
+  content:'\201C';position:absolute;right:.5rem;top:-1.6rem;
+  font-family:var(--f-titulo);font-weight:800;font-size:7rem;line-height:1;
+  color:var(--ambar);opacity:.13;pointer-events:none;
+  transition:transform .55s cubic-bezier(.22,.61,.36,1),opacity .45s ease;
+}
+.depos blockquote:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 22px 46px rgba(73,46,37,.22)}
+.depos blockquote:hover::before{transform:scale(1.18) rotate(-6deg);opacity:.2}
+.depos p{margin:0 0 1rem;font-size:.98rem;line-height:1.6;position:relative}
+.depos cite{
+  font-family:var(--f-titulo);font-weight:500;font-style:normal;font-size:.85rem;
+  color:var(--ambar-txt);display:inline-flex;align-items:center;gap:.45rem;
+}
+/* filete que cresce antes do nome */
+.depos cite::before{
+  content:'';width:0;height:2px;background:var(--ambar);
+  transition:width .45s cubic-bezier(.22,.61,.36,1);
+}
+.depos blockquote:hover cite::before{width:20px}
 
 /* ---------- temporada ---------- */
 .temporada__in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+/* o botão estava colado no parágrafo */
+.temporada .btn--vazado{margin-top:1.75rem}
 .temporada__slot{
   display:grid;place-items:center;text-align:center;padding:2rem;min-height:280px;
   border:2px dashed var(--ambar);border-radius:var(--raio);
   background:repeating-linear-gradient(45deg,var(--branco),var(--branco) 12px,var(--creme-2) 12px,var(--creme-2) 24px);
 }
 .temporada__slot span{font-family:var(--f-titulo);font-size:.95rem;color:var(--marrom)}
-.temporada__slot small{display:block;margin-top:.4rem;font-size:.8rem;color:#8A6A5A}
+.temporada__slot small{display:block;margin-top:.4rem;font-size:.8rem;color:var(--tinta-2)}
 
 /* ---------- onde ---------- */
 .onde{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(2rem,5vw,4rem);align-items:center}
@@ -364,21 +580,24 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
 .horario td{color:var(--trigo);text-align:right}
 .onde__acoes{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.25rem}
 .onde__tel{font-size:.95rem;color:#C4A992;margin:0}
-.onde__tel a{color:var(--trigo)}
+.onde__tel a{color:var(--trigo);display:inline-flex;align-items:center;min-height:44px}
 .onde__mapa{border-radius:var(--raio);overflow:hidden;box-shadow:var(--sombra);aspect-ratio:4/3}
 .onde__mapa iframe{width:100%;height:100%;border:0;display:block;filter:saturate(.85)}
 
 /* ---------- rodapé ---------- */
 .rodape{position:relative;background:var(--creme);padding:0 0 2.5rem;text-align:center}
-.onda{display:block;width:100%;height:90px;fill:var(--creme);margin-top:-1px;position:relative;z-index:2}
+.rodape>.onda{display:block;width:100%;height:90px;fill:var(--creme);margin-top:-1px;position:relative;z-index:2}
 .rodape::before{content:'';position:absolute;top:0;left:0;right:0;height:90px;background:var(--marrom)}
 .rodape__in{position:relative;z-index:3;padding-top:.5rem}
 .rodape__logo{width:190px;height:auto;margin:0 auto 1rem}
-.rodape__frase{font-family:var(--f-script);font-size:1.5rem;color:var(--ambar);margin:0 0 1.25rem}
-.rodape__redes{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1.25rem}
-.rodape__redes a{font-family:var(--f-titulo);font-weight:500;font-size:.92rem;text-decoration:none}
-.rodape__redes a:hover{color:var(--ambar)}
-.rodape__cred{font-size:.82rem;color:#8A6A5A;margin:0}
+.rodape__frase{font-family:var(--f-script);font-size:1.5rem;color:var(--ambar-txt);margin:0 0 1.25rem}
+.rodape__redes{display:flex;justify-content:center;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.rodape__redes a{
+  font-family:var(--f-titulo);font-weight:500;font-size:.92rem;text-decoration:none;
+  display:inline-flex;align-items:center;min-height:44px;padding:0 1rem; /* alvo de toque + 8px de folga */
+}
+.rodape__redes a:hover{color:var(--ambar-txt)}
+.rodape__cred{font-size:.82rem;color:var(--tinta-2);margin:0}
 
 /* ---------- animação de entrada ---------- */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,.61,.36,1)}
@@ -402,7 +621,6 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
   .topo__menu{display:flex}
   .navmob[data-open]{display:flex}
   .hero__trigo--b{display:none}
-  .desce{display:none}
   .carimbo{right:0;bottom:8%}
 }
 @media (max-width:520px){
@@ -425,5 +643,4 @@ h3{font-family:var(--f-titulo);font-weight:700;font-size:1.15rem;margin:0 0 .35r
   .reveal,.entra{opacity:1;transform:none;translate:none}
   .pc,.selo-nota,.carimbo,.hero__trigo{animation:none!important;translate:none!important}
   .carimbo svg{animation:none!important}
-  .desce{display:none}
 }
